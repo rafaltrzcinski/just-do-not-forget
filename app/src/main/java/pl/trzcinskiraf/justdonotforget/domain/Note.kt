@@ -13,7 +13,7 @@ data class Note(
         fun randomUUID() = UUID.randomUUID().toString()
         @JvmField final val CREATOR = object : Parcelable.Creator<Note> {
             override fun createFromParcel(source: Parcel) =
-                    Note(title = source.readString(), content = source.readString())
+                    Note(title = source.readString(), content = source.readString(), uuid = source.readString())
             override fun newArray(size: Int) = arrayOfNulls<Note>(size)
         }
     }
@@ -23,5 +23,6 @@ data class Note(
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(title)
         parcel.writeString(content)
+        parcel.writeString(uuid)
     }
 }
