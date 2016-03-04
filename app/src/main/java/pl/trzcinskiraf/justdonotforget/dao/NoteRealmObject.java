@@ -8,8 +8,7 @@ import pl.trzcinskiraf.justdonotforget.domain.Note;
 @RealmClass
 public class NoteRealmObject extends RealmObject {
 
-    @PrimaryKey
-    private String uuid;
+    @PrimaryKey private String uuid;
     private String title;
     private String content;
 
