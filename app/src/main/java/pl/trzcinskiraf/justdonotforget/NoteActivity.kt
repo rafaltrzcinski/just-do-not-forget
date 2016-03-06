@@ -3,6 +3,7 @@ package pl.trzcinskiraf.justdonotforget
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.view.menu.ActionMenuItemView
 import android.support.v7.widget.Toolbar
@@ -27,6 +28,7 @@ class NoteActivity : AppCompatActivity() {
     private val noteContent by lazy { findViewById(R.id.note_content_edit_text) as EditText }
     private val saveNoteAction by lazy { findViewById(R.id.save_note_action) as ActionMenuItemView }
     private val deleteNoteAction by lazy { findViewById(R.id.delete_note_action) as ActionMenuItemView }
+    private val addNextNoteButton by lazy { findViewById(R.id.add_next_note_button) as FloatingActionButton }
     private val note by lazy { intent.extras.getParcelable<Note>(noteKey) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +43,11 @@ class NoteActivity : AppCompatActivity() {
         }
         deleteNoteAction.setOnClickListener {
             deleteNote(note.uuid)
+            finish()
+        }
+        addNextNoteButton.setOnClickListener {
+            saveOrUpdateNote(note.uuid)
+            NoteActivity.start(this, Note(title = "", content = ""))
             finish()
         }
     }
