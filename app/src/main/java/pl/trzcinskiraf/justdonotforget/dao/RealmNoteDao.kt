@@ -59,7 +59,7 @@ object RealmNoteDao : NoteDao {
     }
 
     override fun deleteOne(uuid: String) {
-        inRealm { where(NoteRealmObject::class.java)
+        inRealmAndTransaction { where(NoteRealmObject::class.java)
                 .equalTo("uuid", uuid)
                 .findFirst()
                 .removeFromRealm() }

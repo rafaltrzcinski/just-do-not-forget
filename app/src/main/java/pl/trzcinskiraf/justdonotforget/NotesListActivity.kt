@@ -1,5 +1,6 @@
 package pl.trzcinskiraf.justdonotforget
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
@@ -16,6 +17,10 @@ import java.util.*
 
 class NotesListActivity : AppCompatActivity() {
 
+    companion object {
+        private const val resultCode = 1
+    }
+
     val notesListRecyclerView by lazy { findViewById(R.id.notes_list_view) as RecyclerView }
     val addNewNoteButton by lazy { findViewById(R.id.add_new_note_button) as FloatingActionButton }
     var notes: MutableList<Note> = ArrayList()
@@ -26,7 +31,10 @@ class NotesListActivity : AppCompatActivity() {
         setRealmConfiguration()
         notesListRecyclerView.layoutManager = LinearLayoutManager(this)
         loadNotesFromDB()
-        setRecyclerViewAdapter()
+        setUpRecyclerView()
+        addNewNoteButton.setOnClickListener {
+            NoteActivity.start(this, Note("", ""))
+        }
     }
 
     private fun setRealmConfiguration() {
@@ -40,13 +48,16 @@ class NotesListActivity : AppCompatActivity() {
         notes.addAll(dao.findAll())
     }
 
-
-    private fun setRecyclerViewAdapter() {
-        notesListRecyclerView.adapter = NotesListAdapter(notes)
+    private fun setUpRecyclerView() {
+        val newAdapter = NotesListAdapter()
+        newAdapter.updateNotes(notes)
+        notesListRecyclerView.adapter = newAdapter
     }
 
     override fun onResume() {
         EventBus.getDefault().register(this)
+        loadNotesFromDB()
+        setUpRecyclerView()
         super.onResume()
     }
 
