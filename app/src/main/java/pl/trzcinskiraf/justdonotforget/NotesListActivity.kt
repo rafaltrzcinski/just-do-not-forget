@@ -1,6 +1,7 @@
 package pl.trzcinskiraf.justdonotforget
 
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,6 +17,7 @@ import java.util.*
 class NotesListActivity : AppCompatActivity() {
 
     val notesListRecyclerView by lazy { findViewById(R.id.notes_list_view) as RecyclerView }
+    val addNewNoteButton by lazy { findViewById(R.id.add_new_note_button) as FloatingActionButton }
     var notes: MutableList<Note> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {

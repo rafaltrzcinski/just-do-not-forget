@@ -7,9 +7,15 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/notes_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_new_note_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/plus_icon"
+        android:layout_margin="10dp"/>
 
 
 </android.support.design.widget.CoordinatorLayout>
