@@ -33,7 +33,7 @@ class NotesListActivity : AppCompatActivity() {
         loadNotesFromDB()
         setUpRecyclerView()
         addNewNoteButton.setOnClickListener {
-            NoteActivity.start(this, Note("", ""))
+            NoteActivity.start(this, Note(title = "", content = ""))
         }
     }
 
