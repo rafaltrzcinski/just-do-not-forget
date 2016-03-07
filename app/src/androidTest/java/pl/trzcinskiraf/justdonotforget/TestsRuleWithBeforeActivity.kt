@@ -7,3 +7,9 @@ inline fun <reified T : JustDoNotForgetActivity> rule(crossinline beforeActivity
         override fun beforeActivityLaunched() = beforeActivityFunction()
     }
 }
+
+inline fun <reified T : JustDoNotForgetActivity> ruleManuallyStarted(crossinline beforeActivityFunction: () -> Unit): ActivityTestRule<T> {
+    return object : ActivityTestRule<T>(T::class.java, false, false) {
+        override fun beforeActivityLaunched() = beforeActivityFunction()
+    }
+}
