@@ -16,4 +16,9 @@ class NotesListAdapter : BaseAdapter() {
         notes.forEach { itemsAdapters.add(NoteItemAdapter(it)) }
         return itemsAdapters
     }
+
+    fun remove(position: Int) {
+        adapters.removeAt(position)
+        notifyItemRemoved(position)
+    }
 }

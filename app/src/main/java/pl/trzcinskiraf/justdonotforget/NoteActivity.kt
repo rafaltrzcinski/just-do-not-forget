@@ -108,8 +108,8 @@ class NoteActivity : JustDoNotForgetActivity() {
         snackBar.show()
     }
 
-    private fun deleteNote(noteUUID: String) = RealmNoteDao.getInstance().deleteOne(noteUUID)
+    fun deleteNote(noteUUID: String) = RealmNoteDao.getInstance().deleteOne(noteUUID)
 
-    private fun saveNote(noteToSave: Note) = RealmNoteDao.getInstance().save(noteToSave)
+    fun saveNote(noteToSave: Note) = RealmNoteDao.getInstance().save(noteToSave)
 
 }

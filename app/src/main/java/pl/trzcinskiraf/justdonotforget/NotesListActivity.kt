@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import de.greenrobot.event.EventBus
 import io.realm.Realm
 import io.realm.RealmConfiguration
@@ -46,6 +47,7 @@ class NotesListActivity : JustDoNotForgetActivity() {
         val newAdapter = NotesListAdapter()
         newAdapter.updateNotes(notes)
         notesListRecyclerView.adapter = newAdapter
+        setUpItemTouchHelper()
     }
 
     override fun onResume() {
@@ -62,6 +64,22 @@ class NotesListActivity : JustDoNotForgetActivity() {
 
     fun onEvent(event: NoteClickEvent) {
         NoteActivity.start(this, event.note)
+    }
+
+    private fun setUpItemTouchHelper() {
+        val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                target: RecyclerView.ViewHolder) = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val swipedPosition = viewHolder.adapterPosition
+                val adapter = notesListRecyclerView.adapter as NotesListAdapter
+                adapter.remove(swipedPosition)
+                NoteActivity().deleteNote(notes[swipedPosition].uuid)
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(notesListRecyclerView)
     }
 
 }
