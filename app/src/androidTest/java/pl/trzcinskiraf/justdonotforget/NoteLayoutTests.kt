@@ -1,7 +1,6 @@
 package pl.trzcinskiraf.justdonotforget
 
 import android.content.Intent
-import android.support.test.espresso.Espresso
 import android.support.test.espresso.Espresso.closeSoftKeyboard
 import org.junit.Before
 import org.junit.Rule
