@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.v7.app.AppCompatActivity
+import android.support.design.widget.Snackbar
 import android.support.v7.view.menu.ActionMenuItemView
 import android.support.v7.widget.Toolbar
 import android.widget.EditText
@@ -12,7 +12,7 @@ import pl.trzcinskiraf.justdonotforget.dao.RealmNoteDao
 import pl.trzcinskiraf.justdonotforget.domain.Note
 import java.util.*
 
-class NoteActivity : AppCompatActivity() {
+class NoteActivity : JustDoNotForgetActivity() {
 
     companion object {
         private val noteKey = "noteKey"
@@ -37,23 +37,37 @@ class NoteActivity : AppCompatActivity() {
         newNoteToolbar.inflateMenu(R.menu.menu_note)
         noteTitle.setText(note.title)
         noteContent.setText(note.content)
+        val noteUuid = note.uuid
+
         saveNoteAction.setOnClickListener {
-            saveOrUpdateNote(note.uuid)
-            finish()
+            if (!isNoteEmpty()) {
+                saveOrUpdateNote(noteUuid)
+                finish()
+            } else
+                notifyBySnackBar("Note title is empty !")
         }
+
         deleteNoteAction.setOnClickListener {
-            deleteNote(note.uuid)
-            finish()
+            if (isNoteRemovable(noteUuid)) {
+                deleteNote(noteUuid)
+                finish()
+            } else
+                notifyBySnackBar("Note does not exist yet, please create first")
         }
+
         addNextNoteButton.setOnClickListener {
-            saveOrUpdateNote(note.uuid)
-            NoteActivity.start(this, Note(title = "", content = ""))
-            finish()
+            if (!isNoteEmpty()) {
+                saveOrUpdateNote(noteUuid)
+                NoteActivity.start(this, Note(title = "", content = ""))
+                finish()
+            } else
+                notifyBySnackBar("Note title is empty !")
         }
     }
 
     override fun onBackPressed() {
-        saveOrUpdateNote(note.uuid)
+        if (!isNoteEmpty())
+            saveOrUpdateNote(note.uuid)
         super.onBackPressed()
     }
 
@@ -61,9 +75,7 @@ class NoteActivity : AppCompatActivity() {
         val note = Note(
                 title = noteTitle.text.toString(),
                 content = noteContent.text.toString())
-        val allUuids = ArrayList<String>()
-        RealmNoteDao.getInstance().findAll().forEach { allUuids.add(it.uuid) }
-        if (allUuids.contains(noteUUID)) {
+        if (getAllNotesUuids().contains(noteUUID)) {
             deleteNote(noteUUID)
             saveNote(note)
         } else {
@@ -71,11 +83,33 @@ class NoteActivity : AppCompatActivity() {
         }
     }
 
-    private fun deleteNote(noteUUID: String) {
-        RealmNoteDao.getInstance().deleteOne(noteUUID)
+    private fun isNoteRemovable(noteUUID: String): Boolean {
+        if (getAllNotesUuids().contains(noteUUID))
+            return true
+        else
+            return false
     }
 
-    private fun saveNote(noteToSave: Note) {
-        RealmNoteDao.getInstance().save(noteToSave)
+    private fun isNoteEmpty(): Boolean {
+        if (noteTitle.text.isNullOrBlank())
+            return true
+        else
+            return false
     }
+
+    private fun getAllNotesUuids(): List<String> {
+        val allUuids = ArrayList<String>()
+        RealmNoteDao.getInstance().findAll().forEach { allUuids.add(it.uuid) }
+        return allUuids
+    }
+
+    private fun notifyBySnackBar(notifierText: String) {
+        val snackBar = Snackbar.make(noteContent, notifierText, Snackbar.LENGTH_LONG)
+        snackBar.show()
+    }
+
+    private fun deleteNote(noteUUID: String) = RealmNoteDao.getInstance().deleteOne(noteUUID)
+
+    private fun saveNote(noteToSave: Note) = RealmNoteDao.getInstance().save(noteToSave)
+
 }

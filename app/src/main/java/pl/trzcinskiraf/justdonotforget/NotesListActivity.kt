@@ -1,10 +1,8 @@
 package pl.trzcinskiraf.justdonotforget
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import de.greenrobot.event.EventBus
 import io.realm.Realm
@@ -15,11 +13,7 @@ import pl.trzcinskiraf.justdonotforget.domain.Note
 import pl.trzcinskiraf.justdonotforget.event.NoteClickEvent
 import java.util.*
 
-class NotesListActivity : AppCompatActivity() {
-
-    companion object {
-        private const val resultCode = 1
-    }
+class NotesListActivity : JustDoNotForgetActivity() {
 
     val notesListRecyclerView by lazy { findViewById(R.id.notes_list_view) as RecyclerView }
     val addNewNoteButton by lazy { findViewById(R.id.add_new_note_button) as FloatingActionButton }
@@ -29,7 +23,7 @@ class NotesListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.notes_list_layout)
         setRealmConfiguration()
-        notesListRecyclerView.layoutManager = LinearLayoutManager(this)
+        notesListRecyclerView.layoutManager = GridLayoutManager(this, 2)
         loadNotesFromDB()
         setUpRecyclerView()
         addNewNoteButton.setOnClickListener {
