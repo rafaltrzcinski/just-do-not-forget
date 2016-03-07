@@ -75,6 +75,7 @@ class NotesListActivity : JustDoNotForgetActivity() {
                 val swipedPosition = viewHolder.adapterPosition
                 val adapter = notesListRecyclerView.adapter as NotesListAdapter
                 adapter.remove(swipedPosition)
+                loadNotesFromDB()
                 NoteActivity().deleteNote(notes[swipedPosition].uuid)
             }
         }
