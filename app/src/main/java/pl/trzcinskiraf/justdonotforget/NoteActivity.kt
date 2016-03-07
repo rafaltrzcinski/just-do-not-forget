@@ -83,19 +83,9 @@ class NoteActivity : JustDoNotForgetActivity() {
         }
     }
 
-    private fun isNoteRemovable(noteUUID: String): Boolean {
-        if (getAllNotesUuids().contains(noteUUID))
-            return true
-        else
-            return false
-    }
+    private fun isNoteRemovable(noteUUID: String) = getAllNotesUuids().contains(noteUUID)
 
-    private fun isNoteEmpty(): Boolean {
-        if (noteTitle.text.isNullOrBlank())
-            return true
-        else
-            return false
-    }
+    private fun isNoteEmpty() = noteTitle.text.isNullOrBlank()
 
     private fun getAllNotesUuids(): List<String> {
         val allUuids = ArrayList<String>()
