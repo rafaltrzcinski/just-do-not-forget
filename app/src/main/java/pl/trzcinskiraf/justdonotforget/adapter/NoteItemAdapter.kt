@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import de.greenrobot.event.EventBus
+import org.greenrobot.eventbus.EventBus
 import pl.trzcinskiraf.justdonotforget.R
 import pl.trzcinskiraf.justdonotforget.domain.Note
 import pl.trzcinskiraf.justdonotforget.event.NoteClickEvent

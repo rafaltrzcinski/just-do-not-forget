@@ -5,9 +5,10 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import de.greenrobot.event.EventBus
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import pl.trzcinskiraf.justdonotforget.adapter.NotesListAdapter
 import pl.trzcinskiraf.justdonotforget.dao.RealmNoteDao
 import pl.trzcinskiraf.justdonotforget.domain.Note
@@ -50,11 +51,17 @@ class NotesListActivity : JustDoNotForgetActivity() {
         setUpItemTouchHelper()
     }
 
+    private fun setUpItemTouchHelper() {
+        val itemTouchCallback = SwipeItemCallback(0, ItemTouchHelper.RIGHT)
+        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(notesListRecyclerView)
+    }
+
     override fun onResume() {
+        super.onResume()
         EventBus.getDefault().register(this)
         loadNotesFromDB()
         setUpRecyclerView()
-        super.onResume()
     }
 
     override fun onPause() {
@@ -62,25 +69,23 @@ class NotesListActivity : JustDoNotForgetActivity() {
         super.onPause()
     }
 
-    fun onEvent(event: NoteClickEvent) {
-        NoteActivity.start(this, event.note)
-    }
+    @Subscribe
+    fun onNoteClick(event: NoteClickEvent) = NoteActivity.start(this, event.note)
 
-    private fun setUpItemTouchHelper() {
-        val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-                                target: RecyclerView.ViewHolder) = false
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val swipedPosition = viewHolder.adapterPosition
-                val adapter = notesListRecyclerView.adapter as NotesListAdapter
-                adapter.remove(swipedPosition)
-                loadNotesFromDB()
-                NoteActivity().deleteNote(notes[swipedPosition].uuid)
-            }
+    private inner class SwipeItemCallback(dragDirs: Int, swipeDirs: Int) : ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
+
+        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                            target: RecyclerView.ViewHolder) = false
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            val swipedPosition = viewHolder.adapterPosition
+            val adapter = notesListRecyclerView.adapter as NotesListAdapter
+            adapter.remove(swipedPosition)
+            loadNotesFromDB()
+            NoteActivity().deleteNote(notes[swipedPosition].uuid)
         }
-        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(notesListRecyclerView)
+
     }
 
 }
