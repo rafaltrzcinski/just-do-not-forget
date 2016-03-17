@@ -52,7 +52,7 @@ class NoteActivity : JustDoNotForgetActivity() {
                 deleteNote(noteUuid)
                 finish()
             } else
-                notifyBySnackBar("Note does not exist yet, please create first")
+                notifyBySnackBar("Please create note first")
         }
 
         addNextNoteButton.setOnClickListener {
@@ -75,7 +75,7 @@ class NoteActivity : JustDoNotForgetActivity() {
         val note = Note(
                 title = noteTitle.text.toString(),
                 content = noteContent.text.toString())
-        if (getAllNotesUuids().contains(noteUUID)) {
+        if (isNoteRemovable(noteUUID)) {
             deleteNote(noteUUID)
             saveNote(note)
         } else {
@@ -85,13 +85,13 @@ class NoteActivity : JustDoNotForgetActivity() {
 
     private fun isNoteRemovable(noteUUID: String) = getAllNotesUuids().contains(noteUUID)
 
-    private fun isNoteEmpty() = noteTitle.text.isNullOrBlank()
-
     private fun getAllNotesUuids(): List<String> {
         val allUuids = ArrayList<String>()
         RealmNoteDao.getInstance().findAll().forEach { allUuids.add(it.uuid) }
         return allUuids
     }
+
+    private fun isNoteEmpty() = noteTitle.text.isNullOrBlank()
 
     private fun notifyBySnackBar(notifierText: String) {
         val snackBar = Snackbar.make(noteContent, notifierText, Snackbar.LENGTH_LONG)
